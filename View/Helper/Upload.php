@@ -16,6 +16,7 @@ class FileMgr_View_Helper_Upload extends Zend_View_Helper_Abstract
         <span>Select files...</span>
         <!-- The file input field used as target for the file upload widget -->
         <input id='fileupload' type='file' name='files[]' multiple>
+		<input id='file_id' type='hidden' value='{$value}'>
     </span>
     <br>
     <br>
