@@ -34,3 +34,34 @@
     height: 100%;
   }
 }
+
+/***********************************
+*
+* Custom CAVOK styling
+* 
+************************************/
+.file-box{
+    max-height: 160px;
+    overflow: scroll;
+    background-color: tan;
+    width: 100%;
+    display: table;
+}
+.file-box-row{
+    height: 20px;
+    display: table-row;
+    background-color: lime;
+}
+.file-id, .file-name, .file-notes, .file-delete{
+    display: table-cell;
+    padding-left: 4px;
+}
+.file-name{
+
+}
+.file-notes{
+
+}
+.file-delete{
+    width: 20px;
+}

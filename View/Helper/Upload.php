@@ -54,7 +54,7 @@ $(function () {
         dataType: 'json',
         done: function (e, data) {
             $.each(data.result.files, function (index, file) {
-                $('#files').append('<span class=\"file\">'+'id'+'</span><span class=\"file\">'+file.name+'</span><br>');
+                $('#files').append('<span class=\"file-box-row\">'+'id'+'</span><span class=\"file\">'+file.name+'</span><br>');
             });
         },
         progressall: function (e, data) {
