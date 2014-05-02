@@ -41,27 +41,29 @@
 * 
 ************************************/
 .file-box{
-    max-height: 160px;
-    overflow: scroll;
-    background-color: tan;
     width: 100%;
-    display: table;
+}
+.file-list{
+    max-height: 160px;
+    overflow: auto;
+    margin-bottom: 15px;
 }
 .file-box-row{
     height: 20px;
     display: table-row;
-    background-color: lime;
 }
-.file-id, .file-name, .file-notes, .file-delete{
+.file-id, .file-name, .file-note, .file-delete{
     display: table-cell;
     padding-left: 4px;
+    width: 20px;
+    border-bottom: 1px solid silver;
 }
 .file-name{
-
+    width: 200px;
 }
-.file-notes{
-
+.file-note{
+    width: 200px;
 }
 .file-delete{
-    width: 20px;
+    
 }

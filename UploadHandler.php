@@ -153,6 +153,11 @@ class FileMgr_UploadHandler
         if ($error_messages) {
             $this->error_messages = $error_messages + $this->error_messages;
         }
+        
+        // added for CAVOK file manager
+        $this->fileModel = $this->options['fileModel'];
+
+
         if ($initialize) {
             $this->initialize();
         }
@@ -247,6 +252,10 @@ class FileMgr_UploadHandler
     }
 
     protected function set_additional_file_properties($file) {
+
+$file->id = 'testig';
+        
+
         $file->deleteUrl = $this->options['script_url']
             .$this->get_query_separator($this->options['script_url'])
             .$this->get_singular_param_name()
@@ -1017,22 +1026,36 @@ class FileMgr_UploadHandler
         $this->destroy_image_object($file_path);
     }
 
-    protected function handle_file_upload($uploaded_file, $name, $size, $type, $error,
-            $index = null, $content_range = null) {
+    /*
+    |--------------------------------------------------------------------------
+    | handle_file_upload
+    |--------------------------------------------------------------------------
+    |
+    |    Take the uploaded file and do things to it.
+    |
+    */
+    
+    protected function handle_file_upload($uploaded_file, $name, $size, $type, $error, $index = null, $content_range = null) {
+        
         $file = new stdClass();
-        $file->name = $this->get_file_name($uploaded_file, $name, $size, $type, $error,
-            $index, $content_range);
+        
+        $file->name = $this->get_file_name($uploaded_file, $name, $size, $type, $error, $index, $content_range);
+        
         $file->size = $this->fix_integer_overflow(intval($size));
         $file->type = $type;
+        
         if ($this->validate($uploaded_file, $file, $error, $index)) {
             $this->handle_form_data($file, $index);
             $upload_dir = $this->get_upload_path();
+            
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, $this->options['mkdir_mode'], true);
             }
+            
             $file_path = $this->get_upload_path($file->name);
             $append_file = $content_range && is_file($file_path) &&
                 $file->size > $this->get_file_size($file_path);
+            
             if ($uploaded_file && is_uploaded_file($uploaded_file)) {
                 // multipart/formdata uploads (POST method uploads)
                 if ($append_file) {
@@ -1052,7 +1075,9 @@ class FileMgr_UploadHandler
                     $append_file ? FILE_APPEND : 0
                 );
             }
+            
             $file_size = $this->get_file_size($file_path, $append_file);
+            
             if ($file_size === $file->size) {
                 $file->url = $this->get_download_url($file->name);
                 if ($this->is_valid_image_file($file_path)) {
@@ -1065,9 +1090,36 @@ class FileMgr_UploadHandler
                     $file->error = $this->get_error_message('abort');
                 }
             }
+            
+            //**************************************************************
+            // This looks like a fine place for database saving stuff
+            // Added for CAVOK File Manager
+            //**************************************************************
+            $fileData = $this->saveToDB($file);
+            $file->file_id = $fileData['id'];
+            $file->note = '';
+
+
+
             $this->set_additional_file_properties($file);
         }
         return $file;
+    }
+    /*
+    |--------------------------------------------------------------------------
+    | saveToDB
+    |--------------------------------------------------------------------------
+    |
+    |    Save the file information to the database
+    |
+    */
+    private function saveToDB()
+    {
+        $fileData = array(
+                'id' => 999
+            );
+
+        return $fileData;
     }
 
     protected function readfile($file_path) {

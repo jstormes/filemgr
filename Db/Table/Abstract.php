@@ -32,7 +32,7 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
      * 
      * @var unknown
      */
-    public $AbstractionDirectoryRoot;
+    public $AbstractionDirectoryRoot = '../files/';
     
     /**
      * Get a file path and mime type for a given file id (FID) 
@@ -61,19 +61,19 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
 
 
         $result =  array(
-            array('name'=>'File Name from the abstract','id'=>'1',
+            array('name'=>'File Name from the abstract that is ridiculously long I mean seriously','id'=>'1',
             'size'=>'3',
-            'md5'=>'4'),
+            'note'=>'This is a saved note that is in the abstract'),
 
             array('name'=>'File Name',
             'id'=>'2',
             'size'=>'3',
-            'md5'=>'4'),
+            'note'=>'This is a saved note that is in the abstract'),
 
             array('name'=>'File Name',
             'id'=>'3',
             'size'=>'3',
-            'md5'=>'4')
+            'note'=>'This is a saved note that is in the abstract')
         );
         return $result;
 
@@ -111,8 +111,83 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
             $NewRow->crea_usr_id        = $this->user['user_id'];
             $NewRow->updt_dtm           = date('Y/m/d H:i:s',time());
             $NewRow->updt_usr_id        = $this->user['user_id'];
-            $attachment_id              = $NewRow->save();
+            $fid                        = $NewRow->save();
 
+            return $fid;
     }
     
+    public function getFileId(){
+
+        
+    }
+
+    public function get_uid_filepath($rootpath = null) {
+        if(is_null($rootpath)){
+            $rootpath = $this->$AbstractionDirectoryRoot;
+        }
+
+        $goodname = false;
+        
+        while (!$goodname) {
+            $candidate = sprintf('%8.8s.%3.3s',strrev(uniqid()),uniqid());
+            if (!is_dir($rootpath.$candidate[0])) {
+                mkdir($rootpath.$candidate[0]);
+            }
+            if (!file_exists($rootpath.$candidate[0]."/".$candidate)) {
+                $goodname = true;
+                $newfilepath = $rootpath.$candidate[0]."/".$candidate;
+            }
+        }
+        return $newfilepath;
+    }
+
+     public function downloadAction() {
+        // Disable menus and don't render any view.
+        $this->_helper->layout()->disableLayout(true);
+        $this->_helper->viewRenderer->setNoRender(true);
+
+        $attachment_id   = $this->_request->getParam('attachment_id',0);
+        $lowRes          = $this->_request->getParam('lowres',1);
+        $imgVersion      = '';
+
+        $AttachmentTable = new Application_Model_DbTable_Attachment();
+        $AttachmentRow   = $AttachmentTable->find($attachment_id)->current();
+
+        $file_name = '../files/'.$AttachmentRow->file_storage_nm[0].'/'.$AttachmentRow->file_storage_nm;  
+
+        if($lowRes){
+          if(file_exists($file_name . '.thumb')){
+            $imgVersion = '.thumb';
+          }
+        }
+
+        // $file_name = '../files/'.$AttachmentRow->file_storage_nm[0].'/'.$AttachmentRow->file_storage_nm.$imgVersion;  
+        
+        // get the file mime type using the file extension
+        switch(strtolower(substr(strrchr($AttachmentRow->file_nm, '.'), 1))) {
+            case 'pdf': $mime  = 'application/pdf'; break;
+            case 'zip': $mime  = 'application/zip'; break;
+            case 'jpeg': $mime = 'image/jpeg'; break;
+            case 'jpg': $mime  = 'image/jpeg'; break;
+            case 'png': $mime  = 'image/png'; break;
+            case 'gif': $mime  = 'image/gif'; break;
+            default:    $mime  = 'application/force-download';
+        }
+
+        header('Pragma: public'); // required
+        header('Expires: 0');
+        // no cache
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        // header('Last-Modified: '.gmdate ('D, d M Y H:i:s', filemtime ($file_name)).' GMT');
+        header('Cache-Control: private',false);
+        header('Content-Type: '. $mime);
+        header('Content-Disposition: inline; filename="'.$AttachmentRow->file_nm.'"');
+        header('Content-Transfer-Encoding: binary');
+        // provide file size
+        // header('Content-Length: '.$AttachmentRow->file_size);
+        // header('Connection: close');
+        // push it out
+        readfile($file_name.$imgVersion);
+        exit();
+    }
 }

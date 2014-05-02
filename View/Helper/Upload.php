@@ -2,7 +2,7 @@
 class FileMgr_View_Helper_Upload extends Zend_View_Helper_Abstract
 {
     
-    public function Upload($name, $value = null, $attribs = null, $options=null)
+    public function Upload($name, $model = null, $attribs = null, $options=null)
     {
         //<link rel="stylesheet" href="css/jquery.fileupload.css">
         $this->view->headLink()->appendStylesheet('/filemgr/css/jquery.fileupload.css','screen');
@@ -11,11 +11,10 @@ class FileMgr_View_Helper_Upload extends Zend_View_Helper_Abstract
         
         $HTML = @"
     <!-- The fileinput-button span is used to style the file input field as button -->
-    <div class='col-lg-12'>
-    
         <!-- The container for the uploaded files -->
-        <div id='files' class='files'></div>
-    
+        <div class='file-list'>
+            <div id='files' class='files'></div>
+        </div>
         <div class='col-lg-4'>
 
         <span class='btn btn-primary btn-sm fileinput-button'>
@@ -32,7 +31,6 @@ class FileMgr_View_Helper_Upload extends Zend_View_Helper_Abstract
             <div class='progress-bar progress-bar-success'></div>
         </div>
         </div>
-    </div>
                 ";
         
         $HTML .= @"
@@ -54,7 +52,15 @@ $(function () {
         dataType: 'json',
         done: function (e, data) {
             $.each(data.result.files, function (index, file) {
-                $('#files').append('<span class=\"file-box-row\">'+'id'+'</span><span class=\"file\">'+file.name+'</span><br>');
+                console.log(file);
+                $('#files').append(
+                    '<span class=\"file-box-row\">'
+                    +'<span class=\"file-id\" data-toggle=\"popover\" data-content=\"test\">'+file.file_id+'</span>'
+                    +'<span class=\"file-name\" title=\"'+file.name+'\">'+file.name+'</span>'
+                    +'<span class=\"file-note\" title=\"'+file.note+'\">'+file.note+'</span>'
+                    +'<span class=\"file-delete\"><a href=\"\"><i class=\"icon icon-trash\"></i><i class=\"fa fa-trash\"></i></span>'
+                    +'</span>'
+                );
             });
         },
         progressall: function (e, data) {
