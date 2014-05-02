@@ -214,7 +214,7 @@ class FileMgr_UploadHandler
             }
             $version_path = $version.'/';
         }
-        return $this->options['upload_dir'].$this->get_user_path()
+        return $this->options['upload_dir'].'/'.$this->get_user_path()
             .$version_path.$file_name;
     }
 
