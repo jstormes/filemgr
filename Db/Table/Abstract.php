@@ -61,17 +61,17 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
 
 
         $result =  array(
-            array('name'=>'File Name from the abstract that is ridiculously long I mean seriously','id'=>'1',
+            array('name'=>'File Name from the abstract that is ridiculously long I mean seriously','file_id'=>'1',
             'size'=>'3',
             'note'=>'This is a saved note that is in the abstract'),
 
-            array('name'=>'File Name',
-            'id'=>'2',
+            array('name'=>'File Name 2',
+            'file_id'=>'2',
             'size'=>'3',
             'note'=>'This is a saved note that is in the abstract'),
 
-            array('name'=>'File Name',
-            'id'=>'3',
+            array('name'=>'File Name 3',
+            'file_id'=>'3',
             'size'=>'3',
             'note'=>'This is a saved note that is in the abstract')
         );

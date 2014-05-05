@@ -252,10 +252,6 @@ class FileMgr_UploadHandler
     }
 
     protected function set_additional_file_properties($file) {
-
-$file->id = 'testig';
-        
-
         $file->deleteUrl = $this->options['script_url']
             .$this->get_query_separator($this->options['script_url'])
             .$this->get_singular_param_name()

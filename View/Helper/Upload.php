@@ -54,12 +54,11 @@ $(function () {
             $.each(data.result.files, function (index, file) {
                 console.log(file);
                 $('#files').append(
-                    '<span class=\"file-box-row\">'
-                    +'<span class=\"file-id\" data-toggle=\"popover\" data-content=\"test\">'+file.file_id+'</span>'
+                    '<span id=\"fid-'+file.file_id+'\" class=\"file-box-row\">'
+                    +'<span class=\"file-id\" title=\"'+file.file_id+'\"><i class=\"icon icon-file\"></i><i class=\"fa fa-file\"></i></span>'
                     +'<span class=\"file-name\" title=\"'+file.name+'\">'+file.name+'</span>'
                     +'<span class=\"file-note\" title=\"'+file.note+'\">'+file.note+'</span>'
-                    +'<span class=\"file-delete\"><a href=\"\"><i class=\"icon icon-trash\"></i><i class=\"fa fa-trash\"></i></span>'
-                    +'</span>'
+                    +'<span class=\"file-delete\"><i data-fid=\"'+file.file_id+'\" class=\"icon icon-trash\"></i><i data-fid=\"'+file.file_id+'\" class=\"fa fa-trash\"></i></span>'                    +'</span>'
                 );
             });
         },
