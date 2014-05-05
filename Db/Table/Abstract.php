@@ -96,37 +96,33 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
      *
      * @param unknown $fgid
      */
-    public function addFile($fgid, $path, $name, $mime_type = null) 
+// addFile($file->fgid, $file->storage_path, $file->storage_name, $file->name, $file->size, $file->type)
+    public function addFile($fgid, $storage_path, $storage_name, $name, $mime_type = null) 
     {
-   
-// protected $_name         = 'task_card_file';
-// protected $_primary      = 'task_card_file_id';
 
-// // the table that is the parent for all of these files
-// protected $_parent_table = 'task_card';
-// // the column in the $_parent_table that contains the parent id for the files
-// protected $_parent_id    = 'task_card_id';
-var_dump($fgid, $path, $name, $mime_type);
-var_dump($_name, $_primary, $_parent_table, $_parent_id); exit;
+        $className   = "Application_Model_DbTable_" . $this->_model;
+        $fileModel   = new $className();
+        
+        $className   = "Application_Model_DbTable_" . $this->_parent_model;
+        $parentModel = new $className();
 
-
-
-            $NewRow                     = $AttachmentTable->createRow();
-            $NewRow->project_id         = $this->_request->getParam('project_id',null);
-            $NewRow->$this->$_parent_id = $parent_id;
-            $NewRow->fgid               = $fgid;
-            $NewRow->uid                = $uid;
-            $NewRow->attachment_nm      = $attachmentname;
-            $NewRow->file_nm            = $filename;
-            $NewRow->file_size          = $size;
-            $NewRow->md5                = $md5;
-            $NewRow->file_storage_nm    = basename($uid_filepath);
-            $NewRow->notes_txt          = $notes_txt;
-            $NewRow->crea_dtm           = date('Y/m/d H:i:s',time());
-            $NewRow->crea_usr_id        = $this->user['user_id'];
-            $NewRow->updt_dtm           = date('Y/m/d H:i:s',time());
-            $NewRow->updt_usr_id        = $this->user['user_id'];
-            $fid                        = $NewRow->save();
+var_dump($modelName);exit;
+            // $NewRow                     = $AttachmentTable->createRow();
+            // $NewRow->project_id         = $this->_request->getParam('project_id',null);
+            // $NewRow->$this->$_parent_id = $parent_id;
+            // $NewRow->fgid               = $fgid;
+            // $NewRow->uid                = $uid;
+            // $NewRow->attachment_nm      = $attachmentname;
+            // $NewRow->file_nm            = $filename;
+            // $NewRow->file_size          = $size;
+            // $NewRow->md5                = $md5;
+            // $NewRow->file_storage_nm    = basename($uid_filepath);
+            // $NewRow->notes_txt          = $notes_txt;
+            // $NewRow->crea_dtm           = date('Y/m/d H:i:s',time());
+            // $NewRow->crea_usr_id        = $this->user['user_id'];
+            // $NewRow->updt_dtm           = date('Y/m/d H:i:s',time());
+            // $NewRow->updt_usr_id        = $this->user['user_id'];
+            // $fid                        = $NewRow->save();
 
             return $fid;
     }

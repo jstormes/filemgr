@@ -1034,7 +1034,7 @@ class FileMgr_UploadHandler
     |
     */
     
-    protected function handle_file_upload($uploaded_file, $name, $size, $type, $error, $index = null, $content_range = null) {
+    protected function handle_file_upload($uploaded_file, $name, $size, $type, $error, $index = null, $content_range = null, $parent_id) {
         
         $file = new stdClass();
 
@@ -1046,9 +1046,9 @@ class FileMgr_UploadHandler
         $file->name         = $this->get_file_name($uploaded_file, $name, $size, $type, $error, $index, $content_range);
         $file->size         = $this->fix_integer_overflow(intval($size));
         $file->type         = $type;
-        
+        $file->parent_id    = $parent_id;
 
-        $fileModel->addFile($file->fgid, $file->storage_path, $file->storage_name, $file->name, $file->size, $file->type);
+        $fileModel->addFile($file->fgid, $file->storage_path, $file->storage_name, $file->name, $file->size, $file->type, $file->parent_id);
 var_dump($file);exit;
         if ($this->validate($uploaded_file, $file, $error, $index)) {
             $this->handle_form_data($file, $index);
@@ -1311,6 +1311,9 @@ var_dump($file);exit;
         if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
             return $this->delete($print_response);
         }
+        
+        // $file_parent_id = $this->_request->getParam('file_id',null);
+
         $upload = isset($_FILES[$this->options['param_name']]) ?
             $_FILES[$this->options['param_name']] : null;
         // Parse the Content-Disposition header, if available:
@@ -1337,7 +1340,8 @@ var_dump($file);exit;
                     $upload['type'][$index],
                     $upload['error'][$index],
                     $index,
-                    $content_range
+                    $content_range, 
+                    $file_parent_id
                 );
             }
         } else {
@@ -1353,7 +1357,8 @@ var_dump($file);exit;
                         $upload['type'] : $this->get_server_var('CONTENT_TYPE'),
                 isset($upload['error']) ? $upload['error'] : null,
                 null,
-                $content_range
+                $content_range,
+                $file_parent_id
             );
         }
         return $this->generate_response(array($this->options['param_name'] => $files), $print_response);

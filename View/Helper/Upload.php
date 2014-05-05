@@ -46,10 +46,11 @@ class FileMgr_View_Helper_Upload extends Zend_View_Helper_Abstract
 /*global window, $ */
 $(function () {
     'use strict';
+
     // Change this to the location of your server-side upload handler:
-    
     var url = '{$upload_url}';
     var controller = '{$controller}';
+    
     $('#fileupload').fileupload({
         url: url,
         dataType: 'json',
