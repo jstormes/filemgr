@@ -9,6 +9,8 @@ class FileMgr_View_Helper_Upload extends Zend_View_Helper_Abstract
         
         $upload_url = $this->view->url(array("action"=>"upload"));
         
+        $controller = 'taskcard';  //*** TODO find a hook in to get this value form the controller ****///
+
         $HTML = @"
     <!-- The fileinput-button span is used to style the file input field as button -->
         <!-- The container for the uploaded files -->
@@ -47,6 +49,7 @@ $(function () {
     // Change this to the location of your server-side upload handler:
     
     var url = '{$upload_url}';
+    var controller = '{$controller}';
     $('#fileupload').fileupload({
         url: url,
         dataType: 'json',
@@ -58,7 +61,7 @@ $(function () {
                     +'<span class=\"file-id\" title=\"'+file.file_id+'\"><i class=\"icon icon-file\"></i><i class=\"fa fa-file\"></i></span>'
                     +'<span class=\"file-name\" title=\"'+file.name+'\">'+file.name+'</span>'
                     +'<span class=\"file-note\" title=\"'+file.note+'\">'+file.note+'</span>'
-                    +'<span class=\"file-delete\"><i data-fid=\"'+file.file_id+'\" class=\"icon icon-trash\"></i><i data-fid=\"'+file.file_id+'\" class=\"fa fa-trash\"></i></span>'                    +'</span>'
+                    +'<span class=\"file-delete\"><i data-fid=\"'+file.file_id+'\" data-controller=\"'+controller+'\" class=\"icon icon-trash\"></i><i data-fid=\"'+file.file_id+'\" data-controller=\"'+controller+'\" class=\"fa fa-trash\"></i></span>'                    +'</span>'
                 );
             });
         },

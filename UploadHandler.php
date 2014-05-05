@@ -154,8 +154,9 @@ class FileMgr_UploadHandler
             $this->error_messages = $error_messages + $this->error_messages;
         }
         
-        // added for CAVOK file manager
-        $this->fileModel = $this->options['fileModel'];
+        //***** added for CAVOK file manager
+        //  the model is set up in the calling controller's filesAction method
+        $this->fileModel = $this->options['fileModel']; // CVK File Manager
 
 
         if ($initialize) {
@@ -1027,19 +1028,28 @@ class FileMgr_UploadHandler
     | handle_file_upload
     |--------------------------------------------------------------------------
     |
+    |    CVK File Manager
     |    Take the uploaded file and do things to it.
+    |    Called from the post() method
     |
     */
     
     protected function handle_file_upload($uploaded_file, $name, $size, $type, $error, $index = null, $content_range = null) {
         
         $file = new stdClass();
+
+        $fileModel = $this->fileModel;
+
+        $file->fgid         = $fileModel->getFgid();
+        $file->storage_path = $fileModel->get_storage_filepath();
+        $file->storage_name = basename($file->storage_path);
+        $file->name         = $this->get_file_name($uploaded_file, $name, $size, $type, $error, $index, $content_range);
+        $file->size         = $this->fix_integer_overflow(intval($size));
+        $file->type         = $type;
         
-        $file->name = $this->get_file_name($uploaded_file, $name, $size, $type, $error, $index, $content_range);
-        
-        $file->size = $this->fix_integer_overflow(intval($size));
-        $file->type = $type;
-        
+
+        $fileModel->addFile($file->fgid, $file->storage_path, $file->storage_name, $file->name, $file->size, $file->type);
+var_dump($file);exit;
         if ($this->validate($uploaded_file, $file, $error, $index)) {
             $this->handle_form_data($file, $index);
             $upload_dir = $this->get_upload_path();
@@ -1106,6 +1116,7 @@ class FileMgr_UploadHandler
     | saveToDB
     |--------------------------------------------------------------------------
     |
+    |    CVK File Manager
     |    Save the file information to the database
     |
     */
@@ -1345,10 +1356,7 @@ class FileMgr_UploadHandler
                 $content_range
             );
         }
-        return $this->generate_response(
-            array($this->options['param_name'] => $files),
-            $print_response
-        );
+        return $this->generate_response(array($this->options['param_name'] => $files), $print_response);
     }
 
     public function delete($print_response = true) {

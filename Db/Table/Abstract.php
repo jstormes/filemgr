@@ -40,7 +40,8 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
      * By: jstormes Apr 29, 2014
      *
      */
-    public function getFile($fid) {
+    public function getFile($fid) 
+    {
          $sql = "SELECT *
                 FROM {$this->_name}
                 WHERE task_card_file_id = $fid
@@ -57,7 +58,8 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
      *
      * @param unknown $fgid
      */
-    public function getFileNames($fgid) {
+    public function getFileNames($fgid) 
+    {
 
 
         $result =  array(
@@ -94,8 +96,21 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
      *
      * @param unknown $fgid
      */
-    public function addFile($fgid, $path, $name, $mime_type=null) {
-        
+    public function addFile($fgid, $path, $name, $mime_type = null) 
+    {
+   
+// protected $_name         = 'task_card_file';
+// protected $_primary      = 'task_card_file_id';
+
+// // the table that is the parent for all of these files
+// protected $_parent_table = 'task_card';
+// // the column in the $_parent_table that contains the parent id for the files
+// protected $_parent_id    = 'task_card_id';
+var_dump($fgid, $path, $name, $mime_type);
+var_dump($_name, $_primary, $_parent_table, $_parent_id); exit;
+
+
+
             $NewRow                     = $AttachmentTable->createRow();
             $NewRow->project_id         = $this->_request->getParam('project_id',null);
             $NewRow->$this->$_parent_id = $parent_id;
@@ -116,18 +131,17 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
             return $fid;
     }
     
-    public function getFileId(){
-
+    public function getFileId()
+    {
         
     }
 
-    public function get_uid_filepath($rootpath = null) {
+    public function get_storage_filepath($rootpath = null) 
+    {
         if(is_null($rootpath)){
-            $rootpath = $this->$AbstractionDirectoryRoot;
+            $rootpath = $this->AbstractionDirectoryRoot;
         }
-
         $goodname = false;
-        
         while (!$goodname) {
             $candidate = sprintf('%8.8s.%3.3s',strrev(uniqid()),uniqid());
             if (!is_dir($rootpath.$candidate[0])) {
@@ -141,7 +155,15 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
         return $newfilepath;
     }
 
-     public function downloadAction() {
+    public function getFgid()
+    {
+        // CREATE uid in uid table
+        $UidTable = new Application_Model_DbTable_Uid();
+        return $UidTable->createRow()->save();
+    }
+
+     public function downloadAction() 
+     {
         // Disable menus and don't render any view.
         $this->_helper->layout()->disableLayout(true);
         $this->_helper->viewRenderer->setNoRender(true);
