@@ -65,5 +65,8 @@
     width: 200px;
 }
 .file-delete{
-    
+    cursor: pointer;
+}
+.file-delete:hover{
+  color: red;
 }
