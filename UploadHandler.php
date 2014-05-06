@@ -1033,23 +1033,27 @@ class FileMgr_UploadHandler
     |    Called from the post() method
     |
     */
-    
-    protected function handle_file_upload($uploaded_file, $name, $size, $type, $error, $index = null, $content_range = null, $parent_id) {
+    protected function handle_file_upload($uploaded_file, $name, $size, $type, $error, $index = null, $content_range = null, $fgid = null) {
         
-        $file = new stdClass();
-
-        $fileModel = $this->fileModel;
-
-        $file->fgid         = $fileModel->getFgid();
+        $file               = new stdClass();   
+        $fileModel          = $this->fileModel;
+        
         $file->storage_path = $fileModel->get_storage_filepath();
         $file->storage_name = basename($file->storage_path);
         $file->name         = $this->get_file_name($uploaded_file, $name, $size, $type, $error, $index, $content_range);
         $file->size         = $this->fix_integer_overflow(intval($size));
-        $file->type         = $type;
-        $file->parent_id    = $parent_id;
+        $file->mime_type    = $type;
 
-        $fileModel->addFile($file->fgid, $file->storage_path, $file->storage_name, $file->name, $file->size, $file->type, $file->parent_id);
-var_dump($file);exit;
+        if(is_null($fgid)){
+            $file->fgid = $fileModel->createFgid();
+        }else{
+            $file->fgid = $fgid;
+        }
+        
+// Zend_Registry::get('log')->debug($file);
+        
+        $fileModel->addFile($file);
+
         if ($this->validate($uploaded_file, $file, $error, $index)) {
             $this->handle_form_data($file, $index);
             $upload_dir = $this->get_upload_path();
@@ -1104,8 +1108,6 @@ var_dump($file);exit;
             $fileData = $this->saveToDB($file);
             $file->file_id = $fileData['id'];
             $file->note = '';
-
-
 
             $this->set_additional_file_properties($file);
         }
@@ -1308,14 +1310,17 @@ var_dump($file);exit;
     }
 
     public function post($print_response = true) {
+        
+        $fgid = isset($_REQUEST['fgid']) ? $_REQUEST['fgid'] : null; // added for CVK file manager
+// Zend_Registry::get('log')->debug($_REQUEST);
+
         if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
             return $this->delete($print_response);
         }
-        
-        // $file_parent_id = $this->_request->getParam('file_id',null);
 
         $upload = isset($_FILES[$this->options['param_name']]) ?
             $_FILES[$this->options['param_name']] : null;
+
         // Parse the Content-Disposition header, if available:
         $file_name = $this->get_server_var('HTTP_CONTENT_DISPOSITION') ?
             rawurldecode(preg_replace(
@@ -1340,8 +1345,8 @@ var_dump($file);exit;
                     $upload['type'][$index],
                     $upload['error'][$index],
                     $index,
-                    $content_range, 
-                    $file_parent_id
+                    $content_range,
+                    $fgid // added for CVK file manager
                 );
             }
         } else {
@@ -1358,9 +1363,10 @@ var_dump($file);exit;
                 isset($upload['error']) ? $upload['error'] : null,
                 null,
                 $content_range,
-                $file_parent_id
+                $fgid // added for CVK file manager
             );
         }
+Zend_Registry::get('log')->debug($files);
         return $this->generate_response(array($this->options['param_name'] => $files), $print_response);
     }
 

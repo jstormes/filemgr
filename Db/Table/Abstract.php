@@ -44,7 +44,7 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
     {
          $sql = "SELECT *
                 FROM {$this->_name}
-                WHERE task_card_file_id = $fid
+                WHERE {$this->_primary} = $fid
                 AND deleted = 0";
 
         $query = $this->getAdapter()->quoteInto($sql,'');
@@ -60,31 +60,13 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
      */
     public function getFileNames($fgid) 
     {
+        $sql = "SELECT {$this->_primary}, file_nm, COALESCE(notes_txt, '') AS notes_txt
+                FROM {$this->_name}
+                WHERE fgid = $fgid
+                AND deleted = 0";
 
-
-        $result =  array(
-            array('name'=>'File Name from the abstract that is ridiculously long I mean seriously','file_id'=>'1',
-            'size'=>'3',
-            'note'=>'This is a saved note that is in the abstract'),
-
-            array('name'=>'File Name 2',
-            'file_id'=>'2',
-            'size'=>'3',
-            'note'=>'This is a saved note that is in the abstract'),
-
-            array('name'=>'File Name 3',
-            'file_id'=>'3',
-            'size'=>'3',
-            'note'=>'This is a saved note that is in the abstract')
-        );
-        return $result;
-
-        //  $sql = "SELECT *
-        //         FROM {$this->_name}
-        //         WHERE deleted = 0";
-
-        // $query = $this->getAdapter()->quoteInto($sql,'');
-        // return $this->getAdapter()->fetchAll($query);       
+        $query = $this->getAdapter()->quoteInto($sql,'');
+        return $this->getAdapter()->fetchAll($query);       
     }
     
     /**
@@ -97,39 +79,46 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
      * @param unknown $fgid
      */
 // addFile($file->fgid, $file->storage_path, $file->storage_name, $file->name, $file->size, $file->type)
-    public function addFile($fgid, $storage_path, $storage_name, $name, $mime_type = null) 
+    public function addFile($file) 
     {
 
         $className   = "Application_Model_DbTable_" . $this->_model;
         $fileModel   = new $className();
-        
-        $className   = "Application_Model_DbTable_" . $this->_parent_model;
-        $parentModel = new $className();
 
-var_dump($modelName);exit;
-            // $NewRow                     = $AttachmentTable->createRow();
-            // $NewRow->project_id         = $this->_request->getParam('project_id',null);
-            // $NewRow->$this->$_parent_id = $parent_id;
-            // $NewRow->fgid               = $fgid;
-            // $NewRow->uid                = $uid;
-            // $NewRow->attachment_nm      = $attachmentname;
-            // $NewRow->file_nm            = $filename;
-            // $NewRow->file_size          = $size;
-            // $NewRow->md5                = $md5;
-            // $NewRow->file_storage_nm    = basename($uid_filepath);
-            // $NewRow->notes_txt          = $notes_txt;
-            // $NewRow->crea_dtm           = date('Y/m/d H:i:s',time());
-            // $NewRow->crea_usr_id        = $this->user['user_id'];
-            // $NewRow->updt_dtm           = date('Y/m/d H:i:s',time());
-            // $NewRow->updt_usr_id        = $this->user['user_id'];
-            // $fid                        = $NewRow->save();
-
+        $user = Zend_Registry::get('user');
+// var_dump($user);exit;
+            $NewRow                   = $fileModel->createRow();
+            $NewRow->project_id       = Zend_Registry::get('project_id');
+            $NewRow->fgid             = $file->fgid;
+            $NewRow->file_nm          = $file->name;
+            $NewRow->mime_type        = $file->mime_type;
+            $NewRow->file_size        = $file->size;
+            $NewRow->file_storage_nm  = $file->storage_name;
+            $NewRow->notes_txt        = '';
+            $NewRow->crea_dtm         = date('Y/m/d H:i:s',time());
+            $NewRow->crea_usr_id      = $user['user_id'];
+            $NewRow->updt_dtm         = date('Y/m/d H:i:s',time());
+            $NewRow->updt_usr_id      = $user['user_id'];
+            $fid                      = $NewRow->save();
+        // $fid = 99999999;
             return $fid;
     }
     
-    public function getFileId()
+    public function deleteFile($fid)
     {
-        
+        $user = Zend_Registry::get('user');
+        $className   = "Application_Model_DbTable_" . $this->_model;
+        $fileModel   = new $className();
+        // var_dump($fid);exit;
+ $data = array(
+                 'deleted'     => 1, 
+                 'updt_usr_id' => $user['user_id']
+        );
+
+ $where[] = $fileModel->getAdapter()->quoteInto("task_card_file_id = ?", (int) $fid);
+        $where[] = $fileModel->getAdapter()->quoteInto('deleted = ?', 0);
+        $fileModel->update($data, $where);
+       
     }
 
     public function get_storage_filepath($rootpath = null) 
@@ -151,7 +140,7 @@ var_dump($modelName);exit;
         return $newfilepath;
     }
 
-    public function getFgid()
+    public function createFgid()
     {
         // CREATE uid in uid table
         $UidTable = new Application_Model_DbTable_Uid();

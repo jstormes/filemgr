@@ -2,7 +2,7 @@
 class FileMgr_View_Helper_Upload extends Zend_View_Helper_Abstract
 {
     
-    public function Upload($name, $model = null, $attribs = null, $options=null)
+    public function Upload($name, $model = null, $filedata = null, $options=null)
     {
         //<link rel="stylesheet" href="css/jquery.fileupload.css">
         $this->view->headLink()->appendStylesheet('/filemgr/css/jquery.fileupload.css','screen');
@@ -24,7 +24,7 @@ class FileMgr_View_Helper_Upload extends Zend_View_Helper_Abstract
             <span>Select files...</span>
             <!-- The file input field used as target for the file upload widget -->
             <input id='fileupload' type='file' name='files[]' multiple>
-            <input id='file_id' type='hidden' value='{$value}'>
+            <input id='fgid' type='hidden' value='{$value}'>
         </span>
         </div>
         <div class='col-lg-8'>
@@ -44,19 +44,23 @@ class FileMgr_View_Helper_Upload extends Zend_View_Helper_Abstract
 <script>
 /*jslint unparam: true */
 /*global window, $ */
+
 $(function () {
     'use strict';
 
     // Change this to the location of your server-side upload handler:
     var url = '{$upload_url}';
     var controller = '{$controller}';
-    
+
     $('#fileupload').fileupload({
         url: url,
         dataType: 'json',
         done: function (e, data) {
+            console.log('fileupload done');
+            console.log(data);
+
             $.each(data.result.files, function (index, file) {
-                console.log(file);
+                // after the file is uploaded then add it to the end of the file list in the UI
                 $('#files').append(
                     '<span id=\"fid-'+file.file_id+'\" class=\"file-box-row\">'
                     +'<span class=\"file-id\" title=\"'+file.file_id+'\"><i class=\"icon icon-file\"></i><i class=\"fa fa-file\"></i></span>'
@@ -74,11 +78,16 @@ $(function () {
             );
         }
     }).prop('disabled', !$.support.fileInput)
-        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+        .parent().addClass($.support.fileInput ? undefined : 'disabled')
+    .bind('fileuploadsubmit', function (e, data){
+        data.formData = {fgid: $('#fgid').val()};
+    })
+    .bind('fileuploaddone', function (e, data){
+        console.log('file done');
+    });
 });
 
-</script>       
-                ";
+</script>";
         
         return $HTML;
     }
