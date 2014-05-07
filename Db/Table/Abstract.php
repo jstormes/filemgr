@@ -60,7 +60,7 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
      */
     public function getFileNames($fgid) 
     {
-        $sql = "SELECT {$this->_primary}, file_nm, COALESCE(notes_txt, '') AS notes_txt
+        $sql = "SELECT {$this->_primary}, file_nm, file_storage_nm, COALESCE(notes_txt, '') AS notes_txt
                 FROM {$this->_name}
                 WHERE fgid = $fgid
                 AND deleted = 0";
@@ -197,4 +197,24 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
         readfile($file_name.$imgVersion);
         exit();
     }
+
+
+    /**
+     * Get a file info from file_storage_nm 
+     *
+     * By: dgd
+     *
+     */
+    public function getFileFromStorageNm($file_storage_nm) 
+    {
+         $sql = "SELECT *
+                FROM {$this->_name}
+                WHERE file_storage_nm = '$file_storage_nm'
+                AND deleted = 0";
+
+        $query = $this->getAdapter()->quoteInto($sql,'');
+        return $this->getAdapter()->fetchAll($query);         
+    }
+
+
 }

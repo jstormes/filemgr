@@ -60,6 +60,8 @@ $(function () {
             console.log(data);
 
             $.each(data.result.files, function (index, file) {
+                console.log('each file');
+                console.log(file);
                 // after the file is uploaded then add it to the end of the file list in the UI
                 $('#files').append(
                     '<span id=\"fid-'+file.file_id+'\" class=\"file-box-row\">'
@@ -68,6 +70,7 @@ $(function () {
                     +'<span class=\"file-note\" title=\"'+file.note+'\">'+file.note+'</span>'
                     +'<span class=\"file-delete\"><i data-fid=\"'+file.file_id+'\" data-controller=\"'+controller+'\" class=\"icon icon-trash\"></i><i data-fid=\"'+file.file_id+'\" data-controller=\"'+controller+'\" class=\"fa fa-trash\"></i></span>'                    +'</span>'
                 );
+                $('#fgid').val(file.fgid); // this is the id of the data row that was clicked on
             });
         },
         progressall: function (e, data) {
@@ -82,8 +85,9 @@ $(function () {
     .bind('fileuploadsubmit', function (e, data){
         data.formData = {fgid: $('#fgid').val()};
     })
-    .bind('fileuploaddone', function (e, data){
-        console.log('file done');
+    .bind('fileuploaddone -- bind', function (e, data){
+        console.log('fileuploaddone');
+        console.log(data);
     });
 });
 
