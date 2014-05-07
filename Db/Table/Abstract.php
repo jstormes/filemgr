@@ -110,16 +110,35 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
         $className   = "Application_Model_DbTable_" . $this->_model;
         $fileModel   = new $className();
         // var_dump($fid);exit;
- $data = array(
-                 'deleted'     => 1, 
-                 'updt_usr_id' => $user['user_id']
+        $data = array(
+            'deleted'     => 1, 
+            'updt_usr_id' => $user['user_id']
         );
 
- $where[] = $fileModel->getAdapter()->quoteInto("task_card_file_id = ?", (int) $fid);
+        $where[] = $fileModel->getAdapter()->quoteInto("task_card_file_id = ?", (int) $fid);
         $where[] = $fileModel->getAdapter()->quoteInto('deleted = ?', 0);
         $fileModel->update($data, $where);
-       
+        return true;
     }
+
+    public function updateFileNote($fid, $note)
+    {
+        $user = Zend_Registry::get('user');
+        $className   = "Application_Model_DbTable_" . $this->_model;
+        $fileModel   = new $className();
+        // var_dump($fid);exit;
+        $data = array(
+            'notes_txt'   => $note, 
+            'updt_usr_id' => $user['user_id']
+        );
+
+        $where[] = $fileModel->getAdapter()->quoteInto("task_card_file_id = ?", (int) $fid);
+        $where[] = $fileModel->getAdapter()->quoteInto('deleted = ?', 0);
+        $fileModel->update($data, $where);
+        return true;
+    }
+
+
 
     public function get_storage_filepath($rootpath = null) 
     {
