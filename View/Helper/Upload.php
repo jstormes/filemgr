@@ -84,17 +84,14 @@ $(function () {
             );
         }
     })
-    .fail(function(){
-        console.log('fail');
-    })
     .prop('disabled', !$.support.fileInput)
         .parent().addClass($.support.fileInput ? undefined : 'disabled')
     .bind('fileuploadsubmit', function (e, data){
+        // console.log('fgid at file upload ');console.log($('#fgid').val());
         data.formData = {fgid: $('#fgid').val()};
     })
     .bind('fileuploaddone -- bind', function (e, data){
-        console.log('fileuploaddone');
-        console.log(data);
+        // console.log('fileuploaddone');console.log(data);
     });
 });
 
