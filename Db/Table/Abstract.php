@@ -86,7 +86,7 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
         $fileModel   = new $className();
 
         $user = Zend_Registry::get('user');
-// var_dump($user);exit;
+
             $NewRow                   = $fileModel->createRow();
             $NewRow->project_id       = Zend_Registry::get('project_id');
             $NewRow->fgid             = $file->fgid;
@@ -100,7 +100,6 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
             $NewRow->updt_dtm         = date('Y/m/d H:i:s',time());
             $NewRow->updt_usr_id      = $user['user_id'];
             $fid                      = $NewRow->save();
-        // $fid = 99999999;
             return $fid;
     }
     
@@ -219,7 +218,7 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
 
 
     /**
-     * Get a file info from file_storage_nm 
+     * Get the file info from file_storage_nm 
      *
      * By: dgd
      *

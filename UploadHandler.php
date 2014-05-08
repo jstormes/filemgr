@@ -264,6 +264,8 @@ class FileMgr_UploadHandler
         if ($this->options['access_control_allow_credentials']) {
             $file->deleteWithCredentials = true;
         }
+        $file->file_nm = $file->name; // added for CVK File Manager to return name in the correct property
+        $file->notes_txt = isset($file->notes_txt) ? $file->notes_txt : ''; // added for CVK File Manager to return notes in the correct property
     }
 
     // Fix for overflowing signed 32 bit integers,
