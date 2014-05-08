@@ -265,6 +265,7 @@ class FileMgr_UploadHandler
             $file->deleteWithCredentials = true;
         }
         $file->file_nm = $file->name; // added for CVK File Manager to return name in the correct property
+        $file->file_storage_nm = $file->storage_name; // added for CVK File Manager to return name in the correct property
         $file->notes_txt = isset($file->notes_txt) ? $file->notes_txt : ''; // added for CVK File Manager to return notes in the correct property
     }
 
