@@ -10,7 +10,7 @@ class FileMgr_View_Helper_Upload extends Zend_View_Helper_Abstract
         $upload_url = $this->view->url(array("action"=>"upload"));
         
         $controller = 'taskcard';  //*** TODO find a hook in to get this value dynamically ****///
-        $model = 'TaskcardFile'; //*** TODO find a hook in to get this value dynamically ****///
+        $model = 'TaskcardFiles'; //*** TODO find a hook in to get this value dynamically ****///
 
         $HTML = @"
     <!-- The fileinput-button span is used to style the file input field as button -->
