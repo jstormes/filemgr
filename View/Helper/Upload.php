@@ -87,11 +87,11 @@ $(function () {
     .prop('disabled', !$.support.fileInput)
         .parent().addClass($.support.fileInput ? undefined : 'disabled')
     .bind('fileuploadsubmit', function (e, data){
-        // console.log('fgid at file upload ');console.log($('#fgid').val());
+        // \\('fgid at file upload ');\\($('#fgid').val());
         data.formData = {fgid: $('#fgid').val()};
     })
     .bind('fileuploaddone -- bind', function (e, data){
-        // console.log('fileuploaddone');console.log(data);
+        // \\('fileuploaddone');\\(data);
     });
 });
 
