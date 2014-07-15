@@ -1,13 +1,9 @@
 FileMgr
 =======
 
-<<<<<<< HEAD
-A ZendFrameowrk 1.x library for managing abstract file uploads and downloads
-=======
 A ZendFramework 1.x library for managing abstract file uploads and downloads
->>>>>>> 54a84a437f5b605334921a37b3f9ea6cfce71641
 
-
+*This read me uses a table called `task_card_files` for a main table called `task`*
 # File Uploads
 Using jQuery File Upload http://blueimp.github.io/jQuery-File-Upload/
 ## Definitions
@@ -18,33 +14,41 @@ Using jQuery File Upload http://blueimp.github.io/jQuery-File-Upload/
 + __file_parent_id__ - this is the id of the 'thing' that owns the file. ie, the task card.
 
 ## Library
-### FileMgr
-#### UploadHander.php
+
+#### FileMgr > UploadHander.php
 The php backend that jQuery File Upload uses to save and display files. 
 
 + The `handle_file_upload` method is modified to hook into the CAVOK file saving methods.
 + A `saveToDB` method is added to handle the interactions with the DB.
 
-#### Db > Table
+#### Library > Db > Table
 Abstract.php - contains all the code to communicate with the file table in the db.
 
-#### View > Helper
+#### Library > View > Helper
 Download.php -- TBD
 
-<<<<<<< HEAD
-Upload.php -- Contains the HTML and JS for the File Upload button and file managment element
-=======
 Upload.php - Contains the HTML and JS for the File Upload button and file managment element
->>>>>>> 54a84a437f5b605334921a37b3f9ea6cfce71641
 
 ## Application
 ### Models
 #### Files
-<<<<<<< HEAD
-XXXXXXFiles.php - extends Abstract.php and contains properties specific to the table that is used to contain the
-=======
-XXXXXXFiles.php - extends Abstract.php and contains properties specific to the table that is used to contain the file data.
->>>>>>> 54a84a437f5b605334921a37b3f9ea6cfce71641
+Application > models > Files > XFiles.php (Where X is the name of that table that holds the file data)
+
+Extends Abstract.php and contains properties specific to the table that is used to contain the file data.
+
+    class Application_Model_Files_TaskcardFiles extends FileMgr_Db_Table_Abstract
+    {
+        protected $_name         = 'task_card_file';
+        protected $_primary      = 'task_card_file_id';
+        protected $_model        = 'TaskcardFile';
+        
+        // // the table that is the parent for all of these files
+        // protected $_parent_table = 'task_card';
+        // // the column in the $_parent_table that contains the parent id for the files
+        // protected $_parent_id    = 'task_card_id';
+        // // the model for the $_parent_table 
+        // protected $_parent_model = 'Taskcard';
+    }
 
 ## TaskcardController
 
@@ -56,8 +60,6 @@ Three methods that could stand to get moved perhaps to the FileMgrController
 
 `uploadAction()` - entry point for the file upload. Collected data is handed off to FileMgr_UploadHandler
 
-<<<<<<< HEAD
-=======
 ## HTML
 ### Upload section
 
@@ -72,7 +74,6 @@ Three methods that could stand to get moved perhaps to the FileMgrController
     <!-- End of Files -->
 
 
->>>>>>> 54a84a437f5b605334921a37b3f9ea6cfce71641
 ## JS
 ### JS in Views and PHP 
 
@@ -109,8 +110,6 @@ Download function that allows download of files from an anchor.
 * Pass the file_storage_nm as 'fsn'
 * Pass the model that stores the file data as 'model'
 
-<<<<<<< HEAD
-=======
 
 ##Database Tables
 
@@ -147,4 +146,19 @@ Change 'task_card_file' to the name of the table for your requirements
         'source_id' bigint(20) DEFAULT NULL,
         PRIMARY KEY ('task_card_file_id')
     ) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
->>>>>>> 54a84a437f5b605334921a37b3f9ea6cfce71641
+
+###Main Table
+ 
+ Needs a new column to hold the `fgid` value. In our example this would be the `task` table.
+
+    'fgid' varchar(20) NOT NULL DEFAULT ''
+
+
+##File Storage
+
+Need a folder called `files` on the root level of the application. In use, additional folder with HEX values 0-F will be generated.
+
+>This directory is the storage directory for files uploaded to the system by
+users.  This directory should be ignored by source control and should be
+backed up as part of your database backup routines as the files in this
+directory are referenced by the database.
