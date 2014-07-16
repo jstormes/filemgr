@@ -9,8 +9,8 @@ class FileMgr_View_Helper_Upload extends Zend_View_Helper_Abstract
         
         $upload_url = $this->view->url(array("action"=>"upload"));
         
-        $controller = 'taskcard';  //*** TODO find a hook in to get this value dynamically ****///
-        $model = 'TaskcardFiles'; //*** TODO find a hook in to get this value dynamically ****///
+        $controller = 'project';  //*** TODO find a hook in to get this value dynamically ****///
+        $model = 'PrrFiles'; //*** TODO find a hook in to get this value dynamically ****///
 
         $HTML = @"
     <!-- The fileinput-button span is used to style the file input field as button -->
@@ -62,16 +62,16 @@ $(function () {
                 
                 // after the file is uploaded then add it to the end of the file list in the UI
                 $('#files').append(
-                    '<span id=\"fid-'+file.task_card_file_id+'\" class=\"file-box-row\">'
-                    +'<span class=\"file-id\" title=\"'+file.task_card_file_id+'\"><i class=\"icon icon-file\"></i><i class=\"fa fa-file\"></i></span>'
+                    '<span id=\"fid-'+file.prr_file_id+'\" class=\"file-box-row\">'
+                    +'<span class=\"file-id\" title=\"'+file.prr_file_id+'\"><i class=\"icon icon-file\"></i><i class=\"fa fa-file\"></i></span>'
                     +'<span class=\"file-name\" title=\"'+file.file_nm+'\">'
                     +'<a href=\"/filemgr/download/fsn/'+file.file_storage_nm+ '/model/'+model+'\">'+file.file_nm+'</a>'
                     +'</span>'
                     +'<span class=\"file-note\" title=\"'+file.notes_txt+'\">'
-                    +'<i data-fid=\"'+file.task_card_file_id+'\" class=\"edit-note icon icon-pencil\"></i><i data-fid=\"'+file.task_card_file_id+'\" class=\"edit-note fa fa-pencil\"></i>&nbsp;'
-                    +'<span id=\"fid-note-'+file.task_card_file_id+'\">'+file.notes_txt+'</span>'
+                    +'<i data-fid=\"'+file.prr_file_id+'\" class=\"edit-note icon icon-pencil\"></i><i data-fid=\"'+file.prr_file_id+'\" class=\"edit-note fa fa-pencil\"></i>&nbsp;'
+                    +'<span id=\"fid-note-'+file.prr_file_id+'\">'+file.notes_txt+'</span>'
                     +'</span>'
-                    +'<span class=\"file-delete\"><i data-fid=\"'+file.task_card_file_id+'\" data-controller=\"'+controller+'\"  class=\"icon icon-trash\"></i><i data-fid=\"'+file.file_id+'\" data-controller=\"'+controller+'\"  class=\"fa fa-trash\"></i></span>'
+                    +'<span class=\"file-delete\"><i data-fid=\"'+file.prr_file_id+'\" data-controller=\"'+controller+'\"  class=\"icon icon-trash\"></i><i data-fid=\"'+file.file_id+'\" data-controller=\"'+controller+'\"  class=\"fa fa-trash\"></i></span>'
                     +'</span>'                );
                 $('#fgid').val(file.fgid); // this is the id of the data row that was clicked on
             });

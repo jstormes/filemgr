@@ -114,7 +114,7 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
             'updt_usr_id' => $user['user_id']
         );
 
-        $where[] = $fileModel->getAdapter()->quoteInto("task_card_file_id = ?", (int) $fid);
+        $where[] = $fileModel->getAdapter()->quoteInto("prr_file_id = ?", (int) $fid);
         $where[] = $fileModel->getAdapter()->quoteInto('deleted = ?', 0);
         $fileModel->update($data, $where);
         return true;
@@ -131,7 +131,7 @@ class FileMgr_Db_Table_Abstract extends Zend_Db_Table_Abstract
             'updt_usr_id' => $user['user_id']
         );
 
-        $where[] = $fileModel->getAdapter()->quoteInto("task_card_file_id = ?", (int) $fid);
+        $where[] = $fileModel->getAdapter()->quoteInto("prr_file_id = ?", (int) $fid);
         $where[] = $fileModel->getAdapter()->quoteInto('deleted = ?', 0);
         $fileModel->update($data, $where);
         return true;
